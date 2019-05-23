@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+{% block content %}
+<header class="masthead">
+    <div class="container h-100">
+      <div class="row h-100 align-items-center">
+        <div class="col-12 text-center">
+          <p class="lead"></p>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!--ESTILOS PARA EL TYPEAHEAD-->
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'typeahead.css' %}">   
+
+        <span class="message">{{ message }}</span>{{ content }}
+
+{% endblock %}

@@ -1,0 +1,185 @@
+
+{% extends 'layout.html' %}
+{% block content %}
+
+<header class="masthead">
+  <div class="container h-100">
+    <div class="row h-100 align-items-center">
+      <div class="col-12 text-center">
+        <p class="lead"></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+  <!--ESTILOS PARA EL TYPEAHEAD-->
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'typeahead.css' %}">
+
+ <!-- Full Page Image Header with Vertically Centered Content -->
+ {% if e != NULL %}
+  <div id="key_alert" class="alert alert-warning" role="alert">
+        <p>Error at trying to set: {{e}}, probably your key has expired: 
+          <a href="https://developer.riotgames.com/">https://developer.riotgames.com/</a></p>
+    </div>
+  </div>
+  {% endif %}
+
+
+  <form class="form-inline">
+      <h2><span class =" label label-default">Champion:</span></h2>
+
+      <div class="form-group mx-sm-3 mb-2" id="the-basics">
+        <input type="text" class="form-control typeahead" name="champion"  placeholder="Buscar campeón..." autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-primary mb-2">Submit</button>  
+  </form>
+
+<p class="lead">TOTAL MATCHES: {{totalGames}}</p>
+
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th></th>
+        <th scope="col">Server</th>
+        <th scope="col">gameId</th>
+        <th scope="col">Champion</th>
+        <th scope="col">queue</th>
+        <th scope="col">season</th>
+        <th scope="col">Fecha</th>
+        <th scope="col">Rol</th>
+        <th scope="col">Línea</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for match in matches %}
+      <tr>
+        <td>
+            <button type="button" class="btn btn-outline-primary window">
+            Info
+            </button>
+        </td>
+        <td>{{ match.platformId }}</td>
+        <td>{{ match.gameId }}</td>
+        <td><img src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/{{ match.champion }}.png" width="50" height="50"/></td>
+        <td>{{ match.queue }}</td>
+        <td>{{ match.season }}</td>
+        <td>{{ match.timestamp }}</td>
+        <td>{{ match.role }}</td>
+        <td>{{ match.lane }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% if totalGames == 0 %}
+  <img src="{% static "lulu.jpg" %}" alt="My image">
+{% endif %}
+{% if totalGames != 0 %}
+  <nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if matches.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page=1"><<</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{matches.previous_page_number}}">Previous</a></li>
+
+    <!--<a href="?page={{matches.previous_page_number}}"><</a>-->
+    {% endif %}
+    {% for num in matches.paginator.page_range %}
+
+    {% if matches.number == num %}
+    <li class="page-item active">
+      <a class="page-link" href="?page={{num}}">{{num}} <span class="sr-only">(current)</span></a>
+    </li>
+
+    {% else %}
+      <li class="page-item"><a class="page-link" href="?page={{num}}">{{num}}</a></li>
+    {% endif %}  
+    {% endfor %}
+
+    {% if matches.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ matches.next_page_number }}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{matches.paginator.num_pages}}">>></a></li>
+    {% endif %} 
+  </ul>
+  </nav>
+  {% endif %}
+   
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">   
+            ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+<script> 
+$( document ).ready(function() {
+
+    $('.window').click(function() {
+        $('#exampleModal').modal('show');
+    });
+    $('#the-basics .typeahead').typeahead({
+      hint: true,
+      highlight: true,
+      minLength: 1
+      },
+      {
+      name: 'states',
+      source: substringMatcher(states)
+    });
+});
+
+</script>
+
+<script>
+var substringMatcher = function(strs) {
+  return function findMatches(q, cb) {
+    var matches, substringRegex;
+
+    // an array that will be populated with substring matches
+    matches = [];
+
+    // regex used to determine if a string contains the substring `q`
+    substrRegex = new RegExp(q, 'i');
+
+    // iterate through the pool of strings and for any string that
+    // contains the substring `q`, add it to the `matches` array
+    $.each(strs, function(i, str) {
+      if (substrRegex.test(str)) {
+        matches.push(str);
+      }
+    });
+
+    cb(matches);
+  };
+};
+
+/*
+var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+];
+*/
+var states = {{ championNames|safe }};
+</script>
+{% endblock %}
