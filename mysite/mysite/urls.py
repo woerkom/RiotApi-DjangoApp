@@ -1,8 +1,10 @@
 from django.contrib import admin
 from django.urls import path
-from core.views import MatchListView, Content
+from django.conf.urls import url, include
+from core.views import MatchListView, ModalContent, Login
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', MatchListView, name='boostrap'),
-    path('content/', Content, name='content')
+    path('', include('core.urls')),
+
 ]

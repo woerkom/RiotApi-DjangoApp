@@ -35,6 +35,8 @@
       <button type="submit" class="btn btn-primary mb-2">Submit</button>  
   </form>
 
+
+
 <p class="lead">TOTAL MATCHES: {{totalGames}}</p>
 
 <table class="table">
@@ -55,7 +57,7 @@
     {% for match in matches %}
       <tr>
         <td>
-            <button type="button" class="btn btn-outline-primary window">
+            <button type="button" class="btn btn-outline-primary window" onclick ="return abrir_modal('{% url 'modalContent' match.gameId %}')">
             Info
             </button>
         </td>
@@ -109,13 +111,13 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Info</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">   
-            ...
+            
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -129,9 +131,6 @@
 <script> 
 $( document ).ready(function() {
 
-    $('.window').click(function() {
-        $('#exampleModal').modal('show');
-    });
     $('#the-basics .typeahead').typeahead({
       hint: true,
       highlight: true,
@@ -140,8 +139,15 @@ $( document ).ready(function() {
       {
       name: 'states',
       source: substringMatcher(states)
-    });
+      });
 });
+
+function abrir_modal(url)
+{
+        $('#exampleModal .modal-body').load(url);
+        $('#exampleModal').modal('show');
+        return false;
+}
 
 </script>
 

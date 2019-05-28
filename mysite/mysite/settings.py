@@ -122,10 +122,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 HEADERS = {
     "Origin": "https://developer.riotgames.com",
     "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
-    "X-Riot-Token": "RGAPI-7c41c213-415f-4d37-8a82-00b79a6d184d",
     "Accept-Language": "es-ES,es;q=0.9",
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36"
 }
