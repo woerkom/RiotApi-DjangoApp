@@ -41,7 +41,7 @@ class Match(object):
             return self.champions[str(self.champion)]
         else:
             return self.champion
-    def GetMatchInfo(self):
+    def GetMatchInfo(self): #de repente si lo quito: "object has no attribute GetMathInfo()" aunque no lo estoy usando.
         url = 'https://euw1.api.riotgames.com/lol/match/v4/matches/' + str(self.gameId)
         r = requests.get(url, headers=settings.HEADERS)
         datos = r.json()

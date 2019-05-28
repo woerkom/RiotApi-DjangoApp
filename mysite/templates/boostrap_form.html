@@ -19,8 +19,7 @@
  <!-- Full Page Image Header with Vertically Centered Content -->
  {% if e != NULL %}
   <div id="key_alert" class="alert alert-warning" role="alert">
-        <p>Error at trying to set: {{e}}, probably your key has expired: 
-          <a href="https://developer.riotgames.com/">https://developer.riotgames.com/</a></p>
+        <p class="text-center">Error at trying to set: {{e}}</p>
     </div>
   </div>
   {% endif %}
@@ -121,7 +120,6 @@
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
             </div>
           </div>
         </div>

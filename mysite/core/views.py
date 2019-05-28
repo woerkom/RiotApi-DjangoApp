@@ -73,8 +73,12 @@ def Login(request):
 def ModalContent(request, gameId):
     #content = l[0].GetMatchInfo()[0].win
     #my_thing = request.session.get('my_thing', None) 
-    context =   {
-            'message' : gameId,
-            'content' : "hola mundo"
-        }
-    return render(request, "content.html", context)
+    url = 'https://euw1.api.riotgames.com/lol/match/v4/matches/' + str(gameId)
+    r = requests.get(url, headers=settings.HEADERS)
+    datos = r.json()
+    playersMatch = []
+    for i in range(10): #iteramos con los 10 jugadores
+        player_info = {**datos['participantIdentities'][i], **datos['participants'][i]} #Info de un jugador en una partida
+        playersMatch.append(Player_Match(gameId, player_info)) 
+    
+    return render(request, "content.html", {"playersMatch1": playersMatch[:5], "playersMatch2": playersMatch[5:]})

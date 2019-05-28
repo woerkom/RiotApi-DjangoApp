@@ -1,2 +1,64 @@
-abajo muestra el contenido
-<p>{{ message }}</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <link rel="icon" href="https://s3-us-west-1.amazonaws.com/riot-developer-portal/img/favicon.png" type="image/ico">
+    <title>Riot API</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
+    <!--typeahead.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.bundle.js"></script>
+  </head>
+  <body>
+<!--DIV 1-->
+<div class="row">
+<div class="table-responsive col-md-6">
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">SummonerName</th>
+        <th scope="col">K/D/A</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for playerMatch in playersMatch1 %}
+      <tr>
+        <td class="{% if playerMatch.win %}table-success {% else %}table-danger{% endif %}">{{ playerMatch.player.summonerName }}</td>
+        <td>{{ playerMatch.kills }}/{{ playerMatch.deaths }}/{{ playerMatch.assists }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!--DIV 2-->
+<div class="table-responsive col-md-6">
+<table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">SummonerName</th>
+        <th scope="col">K/D/A</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for playerMatch in playersMatch2 %}
+      <tr>
+        <td class="{% if playerMatch.win == True %}table-success {% else %}table-danger{% endif %}">{{ playerMatch.player.summonerName }}</td>
+        <td>{{ playerMatch.kills }}/{{ playerMatch.deaths }}/{{ playerMatch.assists }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+  </body>
