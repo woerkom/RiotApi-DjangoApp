@@ -25,6 +25,7 @@
     <thead class="thead-dark">
       <tr>
         <th scope="col">SummonerName</th>
+        <th>Champion</th>
         <th scope="col">K/D/A</th>
       </tr>
     </thead>
@@ -32,6 +33,7 @@
     {% for playerMatch in playersMatch1 %}
       <tr>
         <td class="{% if playerMatch.win %}table-success {% else %}table-danger{% endif %}">{{ playerMatch.player.summonerName }}</td>
+        <td><img src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/{{ playerMatch.champion }}.png" width="50" height="50"/></td>
         <td>{{ playerMatch.kills }}/{{ playerMatch.deaths }}/{{ playerMatch.assists }}</td>
       </tr>
     {% endfor %}
@@ -45,6 +47,7 @@
     <thead class="thead-dark">
       <tr>
         <th scope="col">SummonerName</th>
+        <th scope="col">Champion</th>
         <th scope="col">K/D/A</th>
       </tr>
     </thead>
@@ -52,6 +55,7 @@
     {% for playerMatch in playersMatch2 %}
       <tr>
         <td class="{% if playerMatch.win == True %}table-success {% else %}table-danger{% endif %}">{{ playerMatch.player.summonerName }}</td>
+        <td><img src="http://ddragon.leagueoflegends.com/cdn/6.24.1/img/champion/{{ playerMatch.champion }}.png" width="50" height="50"/></td>
         <td>{{ playerMatch.kills }}/{{ playerMatch.deaths }}/{{ playerMatch.assists }}</td>
       </tr>
     {% endfor %}

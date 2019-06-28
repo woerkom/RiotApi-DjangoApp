@@ -13,6 +13,7 @@ class Player_Match(object):
         self.kills = player_info['stats']['kills']
         self.deaths = player_info['stats']['deaths']
         self.assists = player_info['stats']['assists']
+        self.champion = Match.GetChampionName(player_info['championId'])
 
         self.player = Player(player_info['player'])
 
@@ -29,18 +30,21 @@ class Match(object):
         self.timestamp = datetime.datetime.fromtimestamp(self.timestamp/1000)
         self.timestamp = self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-    def GetAllChampionsName(self):
+    @staticmethod
+    def GetAllChampionsName():
         url = 'http://ddragon.leagueoflegends.com/cdn/6.24.1/data/en_US/champion.json' 
         r = requests.get(url, headers=settings.HEADERS)
         datos = r.json()
         champions = datos['data']
         return {champions[champ]['key'] : champions[champ]['id'] for champ in champions}
 
-    def GetChampionName(self):
-        if str(self.champion) in self.champions:
-            return self.champions[str(self.champion)]
+    @staticmethod
+    def GetChampionName(champion):
+        champions = Match.GetAllChampionsName()
+        if str(champion) in champions:
+            return champions[str(champion)]
         else:
-            return self.champion
+            return champion
     def GetMatchInfo(self): #de repente si lo quito: "object has no attribute GetMathInfo()" aunque no lo estoy usando.
         url = 'https://euw1.api.riotgames.com/lol/match/v4/matches/' + str(self.gameId)
         r = requests.get(url, headers=settings.HEADERS)
@@ -55,5 +59,5 @@ class Match(object):
         self.Timestamp_toDate()
         if not self.champions:
             self.champions = self.GetAllChampionsName()
-        self.champion = self.GetChampionName()
+        self.champion = self.GetChampionName(self.champion)
         

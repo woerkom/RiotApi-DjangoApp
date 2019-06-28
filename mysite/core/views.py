@@ -80,5 +80,4 @@ def ModalContent(request, gameId):
     for i in range(10): #iteramos con los 10 jugadores
         player_info = {**datos['participantIdentities'][i], **datos['participants'][i]} #Info de un jugador en una partida
         playersMatch.append(Player_Match(gameId, player_info)) 
-    
     return render(request, "content.html", {"playersMatch1": playersMatch[:5], "playersMatch2": playersMatch[5:]})
