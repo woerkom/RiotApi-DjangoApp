@@ -14,9 +14,16 @@ def MatchListView(request):
     #VARIABLE PARA DEBUGEAR
     #settings.HEADERS["X-Riot-Token"] = 'RGAPI-39633240-eb60-44db-8dda-36cf28d9f419'
 
-    url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
-
     try:
+        url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
+
+        summonerName_query = request.GET.get('SummonerName')
+        if summonerName_query !='' and summonerName_query is not None:
+            summonerUrl = 'https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/' + summonerName_query
+            r = requests.get(summonerUrl, headers=settings.HEADERS)
+            datos = r.json()
+            url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/' + datos['accountId'] 
+
         r = requests.get(url, headers=settings.HEADERS)
         datos = r.json()
         matches = datos['matches']
@@ -33,9 +40,10 @@ def MatchListView(request):
         else:
             totalGames = datos['totalGames']
         
-        paginator = Paginator(l, 8)
-        page = request.GET.get('page')
-        l = paginator.get_page(page)
+        if len(l) != 0:
+            paginator = Paginator(l, 8)
+            page = request.GET.get('page')
+            l = paginator.get_page(page)
         
         context = {
             'totalGames': totalGames,
@@ -43,7 +51,7 @@ def MatchListView(request):
             'championNames': all_champions  
         }
 
-        request.session['my_thing'] = l[0].GetMatchInfo()[0].win
+        #request.session['my_thing'] = l[0].GetMatchInfo()[0].win
         #request.session['my_thing'] = {'266': 'Aatrox', '103': 'Ahri', '84': 'Akali',}
 
 

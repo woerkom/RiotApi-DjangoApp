@@ -31,9 +31,14 @@
       <div class="form-group mx-sm-3 mb-2" id="the-basics">
         <input type="text" class="form-control typeahead" name="champion"  placeholder="Buscar campeón..." autocomplete="off">
       </div>
+
+      <h2><span class =" label label-default">SummonerName:</span></h2>
+
+      <div class="form-group mx-sm-3 mb-2" id="the-basics">
+        <input type="text" class="form-control" name="SummonerName" autocomplete="off">
+      </div>
       <button type="submit" class="btn btn-primary mb-2">Submit</button>  
   </form>
-
 
 
 <p class="lead">TOTAL MATCHES: {{totalGames}}</p>
@@ -83,8 +88,15 @@
     </tbody>
   </table>
 
-{% if totalGames == 0 %}
-  <img src="{% static "lulu.jpg" %}" alt="My image">
+{% if not totalGames %}
+<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <img class="mx-auto d-block" src="{% static "lulu.jpg" %}" alt="My image">
+        </div>
+    </div>
+</div>
+
 {% endif %}
 {% if totalGames != 0 %}
   <nav aria-label="Page navigation example">
