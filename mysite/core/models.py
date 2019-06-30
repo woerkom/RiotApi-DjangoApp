@@ -47,17 +47,21 @@ class Match(object):
             return champion
     def GetMatchInfo(self): #de repente si lo quito: "object has no attribute GetMathInfo()" aunque no lo estoy usando.
         url = 'https://euw1.api.riotgames.com/lol/match/v4/matches/' + str(self.gameId)
-        r = requests.get(url, headers=settings.HEADERS)
-        datos = r.json()
-        playersMatch = []
-        for i in range(10):
-            player_info = {**datos['participantIdentities'][i], **datos['participants'][i]} #Info de un jugador en una partida
-            playersMatch.append(Player_Match(self.gameId, player_info)) 
-        return playersMatch
-    def __init__(self, j):
+        try:
+            r = requests.get(url, headers=settings.HEADERS)
+            datos = r.json()
+            playersMatch = []
+            for i in range(10):
+                player_info = {**datos['participantIdentities'][i], **datos['participants'][i]} #Info de un jugador en una partida
+                playersMatch.append(Player_Match(self.gameId, player_info)) 
+            return playersMatch
+        except Exception as e:
+            return -1
+    def __init__(self, j, guardar):
         self.__dict__ = json.loads(j)
         self.Timestamp_toDate()
         if not self.champions:
             self.champions = self.GetAllChampionsName()
         self.champion = self.GetChampionName(self.champion)
-        
+        if guardar == True:
+            self.players_match = self.GetMatchInfo() 

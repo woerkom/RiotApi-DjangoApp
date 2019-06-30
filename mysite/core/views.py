@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from .models import Match, Player_Match, Player
 import requests
 import json
+import time
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
@@ -30,7 +31,7 @@ def MatchListView(request):
         totalGames = datos['totalGames']
 
         #json.dumps(match)    para convertir dict en string
-        l = [Match(json.dumps(match)) for match in matches]
+        l = [Match(json.dumps(match), False) for match in matches]
         all_champions = list(l[0].champions.values())
         campeon_query = request.GET.get('champion')
         print("campeon:", campeon_query)
@@ -89,3 +90,21 @@ def ModalContent(request, gameId):
         player_info = {**datos['participantIdentities'][i], **datos['participants'][i]} #Info de un jugador en una partida
         playersMatch.append(Player_Match(gameId, player_info)) 
     return render(request, "content.html", {"playersMatch1": playersMatch[:5], "playersMatch2": playersMatch[5:]})
+
+def Estadisticas(request):
+    url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
+    r = requests.get(url, headers=settings.HEADERS)
+    datos = r.json()
+    datos = datos['matches']
+    
+    #rellenamos el objeto, si la propiedad players_math devuelve 1 esperamos para volver a realizar la peticion a la API
+    matches = []
+    #for match in datos:
+    #    partida = Match(json.dumps(match), True)
+    #    while partida.players_match == -1:
+    #        time.sleep(1)
+    #        partida = Match(json.dumps(match), True)
+
+    #matches.append(partida)
+
+    return render(request, "estadisticas.html", {"matches": matches})
