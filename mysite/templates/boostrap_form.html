@@ -25,7 +25,7 @@
   {% endif %}
 
 
-  <form class="form-inline">
+  <form class="form-inline" id="consulta">
       <h2><span class =" label label-default">Champion:</span></h2>
 
       <div class="form-group mx-sm-3 mb-2" id="the-basics">
@@ -37,12 +37,11 @@
       <div class="form-group mx-sm-3 mb-2" id="the-basics">
         <input type="text" class="form-control" name="SummonerName" autocomplete="off">
       </div>
-      <button type="submit" class="btn btn-primary mb-2">Submit</button>  
+      <button type="submit" class="btn btn-primary mb-2" >Submit</button>  
   </form>
 
 
 <p class="lead">TOTAL MATCHES: {{totalGames}}</p>
-<div>
 <table class="table">
     <thead class="thead-dark">
       <tr>
@@ -57,7 +56,10 @@
         <th scope="col">Línea</th>
       </tr>
     </thead>
-    <tbody>
+      <tr hidden id="tr_preloader">
+        <td><div id="div_preloader" class="preloader"></div></td>
+      </tr>
+    <tbody id="contenidoConsulta">
     {% for match in matches %}
       <tr>
         <td>
@@ -87,7 +89,7 @@
     {% endfor %}
     </tbody>
   </table>
-</div>
+
 {% if not totalGames %}
 <div class="container">
     <div class="row">
@@ -159,15 +161,8 @@ $( document ).ready(function() {
       source: substringMatcher(states)
       });
 
-    //$('.preloader').removeClass("preloader");
+    //$('#tabla-principal').removeClass("preloader");
 });
-
-//function abrir_modal(url)
-//{
-//        $('#exampleModal .modal-body').load(url);
-//        $('#exampleModal').modal('show');
-//        return false;
-//}
 
 function abrir_modal(url, gameId)
 {
@@ -221,8 +216,28 @@ var states = {{ championNames|safe }};
 </script>
 
 <script>
-$(window).load(function() {
-    $('.preloader').fadeOut();
+$('#consulta').on('submit', function()
+{
+  $('#contenidoConsulta').hide();
+  $('#tr_preloader').removeAttr('hidden');
+
+  $.ajax({
+        url : "matches/?champion={{ champion }}&SummonerName={{ SummonerName }}", // the endpoint
+        type : "GET", // http method
+        data : {}, // data sent with the get request
+
+        // handle a successful response
+        success : function(json) {
+            $('#contenidoConsulta').show(); // remove the value from the input
+            console.log("success"); // another sanity check
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+  });
 });
 </script>
 <style>
@@ -234,6 +249,7 @@ $(window).load(function() {
   background-image: url("/static/rotating.gif");
   background-repeat: no-repeat; 
   background-position: center;
+  background-color:green;
   left:0px;
   top:0px;
 }
