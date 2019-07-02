@@ -42,7 +42,7 @@
 
 
 <p class="lead">TOTAL MATCHES: {{totalGames}}</p>
-
+<div>
 <table class="table">
     <thead class="thead-dark">
       <tr>
@@ -87,7 +87,7 @@
     {% endfor %}
     </tbody>
   </table>
-
+</div>
 {% if not totalGames %}
 <div class="container">
     <div class="row">
@@ -96,14 +96,13 @@
         </div>
     </div>
 </div>
-
 {% endif %}
 {% if totalGames != 0 %}
   <nav aria-label="Page navigation example">
   <ul class="pagination justify-content-center">
     {% if matches.has_previous %}
-    <li class="page-item"><a class="page-link" href="?page=1"><<</a></li>
-    <li class="page-item"><a class="page-link" href="?page={{matches.previous_page_number}}">Previous</a></li>
+    <li class="page-item"><a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page=1">&lt;&lt;</a></li>
+    <li class="page-item"><a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page={{matches.previous_page_number}}">Previous</a></li>
 
     <!--<a href="?page={{matches.previous_page_number}}"><</a>-->
     {% endif %}
@@ -111,17 +110,17 @@
 
     {% if matches.number == num %}
     <li class="page-item active">
-      <a class="page-link" href="?page={{num}}">{{num}} <span class="sr-only">(current)</span></a>
+      <a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page={{num}}">{{num}} <span class="sr-only">(current)</span></a>
     </li>
 
     {% else %}
-      <li class="page-item"><a class="page-link" href="?page={{num}}">{{num}}</a></li>
+      <li class="page-item"><a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page={{num}}">{{num}}</a></li>
     {% endif %}  
     {% endfor %}
 
     {% if matches.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ matches.next_page_number }}">Next</a></li>
-    <li class="page-item"><a class="page-link" href="?page={{matches.paginator.num_pages}}">>></a></li>
+    <li class="page-item"><a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page={{ matches.next_page_number }}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="?champion={{ champion }}&SummonerName={{ SummonerName }}&page={{matches.paginator.num_pages}}">&gt;&gt;</a></li>
     {% endif %} 
   </ul>
   </nav>
@@ -159,6 +158,8 @@ $( document ).ready(function() {
       name: 'states',
       source: substringMatcher(states)
       });
+
+    //$('.preloader').removeClass("preloader");
 });
 
 //function abrir_modal(url)
@@ -218,4 +219,23 @@ var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
 */
 var states = {{ championNames|safe }};
 </script>
+
+<script>
+$(window).load(function() {
+    $('.preloader').fadeOut();
+});
+</script>
+<style>
+.preloader {
+  position:static;
+  width:auto;
+  height:30em;
+  background:#FFF;
+  background-image: url("/static/rotating.gif");
+  background-repeat: no-repeat; 
+  background-position: center;
+  left:0px;
+  top:0px;
+}
+</style>
 {% endblock %}

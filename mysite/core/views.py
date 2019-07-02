@@ -16,16 +16,18 @@ def MatchListView(request):
     #settings.HEADERS["X-Riot-Token"] = 'RGAPI-39633240-eb60-44db-8dda-36cf28d9f419'
 
     try:
-        url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
+        if 'matches_url' not in request.session:
+            print("ha entrado la primera vez: no tiene url de matches")
+            request.session['matches_url'] = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
 
         summonerName_query = request.GET.get('SummonerName')
         if summonerName_query !='' and summonerName_query is not None:
             summonerUrl = 'https://euw1.api.riotgames.com/lol/summoner/v4/summoners/by-name/' + summonerName_query
             r = requests.get(summonerUrl, headers=settings.HEADERS)
             datos = r.json()
-            url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/' + datos['accountId'] 
-
-        r = requests.get(url, headers=settings.HEADERS)
+            request.session['matches_url'] = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/' + datos['accountId'] 
+        
+        r = requests.get(request.session['matches_url'], headers=settings.HEADERS)
         datos = r.json()
         matches = datos['matches']
         totalGames = datos['totalGames']
@@ -49,7 +51,9 @@ def MatchListView(request):
         context = {
             'totalGames': totalGames,
             'matches': l,
-            'championNames': all_champions  
+            'championNames': all_champions,
+            'summonerName': summonerName_query,
+            'champion': campeon_query if campeon_query!=None else '',  
         }
 
         #request.session['my_thing'] = l[0].GetMatchInfo()[0].win
