@@ -16,6 +16,29 @@
 Al tener un límite de peticiones por segundo esto puede tardar la primera vez.</p>
 </div>
 
+
+
+<script>
+$(".preloader").hide()
+$.ajax({
+        url : "estadisticas/", // the endpoint
+        type : "GET", // http method
+        data : {}, // data sent with the get request
+
+        // handle a successful response
+        success : function(json) {
+            $('.preloader').show(); // remove the value from the input
+            console.log("success"); // another sanity check
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+  });
+</script>
+
 <style>
 .preloader {
   position:relative;

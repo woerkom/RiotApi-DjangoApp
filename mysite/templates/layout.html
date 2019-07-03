@@ -17,6 +17,53 @@
 
     <!--typeahead.js-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.2.1/typeahead.bundle.js"></script>
+
+    <script>
+    $(document).ready(function()
+    {
+      $('a.nav-link').click(function()
+      {
+        $('.preloader').show();
+        $('#contenido').hide();
+        var page = $(this).attr('href');
+
+        $.ajax({
+        url : "matches/", // the endpoint
+        type : "GET", // http method
+        data : {}, // data sent with the get request
+
+        // handle a successful response
+        success : function(json) {
+            $('.preloader').attr('hidden'); // remove the value from the input
+            $('#contenido').show();
+            alert(page)
+            console.log("success"); // another sanity check
+        },
+        // handle a non-successful response
+        error : function(xhr,errmsg,err) {
+            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+        }
+  });
+      });
+    });
+    </script>
+
+    <style>
+  .preloader {
+  position:relative;
+  width:30em;
+  height:30em;
+  background:#FFF;
+  background-image: url("/static/rotating.gif");
+  background-repeat: no-repeat; 
+  background-position: center;
+  left:40px;
+  top:20px;
+  margin: 0 auto;
+}
+</style>
   </head>
   <body>
     <!-- Navigation -->
@@ -43,7 +90,13 @@
   <!-- Page Content -->
   <section class="py-5">
     <div class="container">
+        <div hidden class="preloader">
+          <p class="text-center bg-info">Para hacer estádisticas necesitamos descargar los datos de la api. 
+            Al tener un límite de peticiones por segundo esto puede tardar la primera vez.</p>
+        </div>
+        <div id="contenido">
         {% block content %}{% endblock %}
+        </div>
     </div>
   </section>
   </body>

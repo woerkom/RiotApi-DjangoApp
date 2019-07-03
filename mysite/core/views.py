@@ -99,28 +99,44 @@ def Estadisticas(request):
     
     #Comprobamos si para ese AccountId existe ya un xml, si existe lo actualiza, sino lo genera
     xml_name = request.session['matches_url'].rsplit("/")[-1]
-    path = os.path.join(settings.BASE_DIR, "jsons\\")
+    path = os.path.join(settings.BASE_DIR, "jsons/")
+    
+    matchesJson = [] #matches leídos del json
     if os.path.isfile(path + xml_name + '.json'):
         print("[DEBUG]: archivo encontado")
+
+        #Leemos el archivo
+        with open(path + xml_name + ".json") as f:
+            for line in f:
+                j_content = json.loads(line)
+                matchesJson.append(j_content)
     else:
         f = open(path + xml_name + ".json", "xt")        
 
-    #rellenamos el objeto, si la propiedad players_math devuelve 1 esperamos para volver a realizar la peticion a la API
+    #peticion a la API
     matches = []
-    for match in datos:
+    for index, match in enumerate(datos):
         partida = Match(json.dumps(match), True)
+        if len(matchesJson) > 0 and matchesJson[index]['gameId'] == partida.gameId:
+            print("[DEBUG]: ",index,"-->", "partida", partida.gameId, "existe en matchesJson" )
+            break
         while partida.players_match == -1:
             time.sleep(1)
             partida = Match(json.dumps(match), True)
 
         matches.append(partida)
 
-    for game in matches:
-        #MyEncoder saca un string con toda la info del objeto que pasaremos a json mediante json.loads
-        gameJson = json.loads(MyEncoder().encode(game))
-        del gameJson['champions'] #Eliminamos la variable compartida champions
-        json.dump(gameJson, f)
-        f.write("\n")
+    #guardado en json
+    if len(matches) > 0:
+        for game in matches:
+            #MyEncoder saca un string con toda la info del objeto que pasaremos a json mediante json.loads
+            gameJson = json.loads(MyEncoder().encode(game))
+            del gameJson['champions'] #Eliminamos la variable compartida champions
+            json.dump(gameJson, f)
+            f.write("\n")
 
+    f.close()
+
+        
 
     return render(request, "estadisticas.html")
