@@ -23,12 +23,12 @@
     {
       $('a.nav-link').click(function()
       {
-        $('.preloader').show();
+        $('.preloader').removeAttr('hidden');
         $('#contenido').hide();
         var page = $(this).attr('href');
 
         $.ajax({
-        url : "matches/", // the endpoint
+        url : page, // the endpoint
         type : "GET", // http method
         data : {}, // data sent with the get request
 
@@ -36,7 +36,6 @@
         success : function(json) {
             $('.preloader').attr('hidden'); // remove the value from the input
             $('#contenido').show();
-            alert(page)
             console.log("success"); // another sanity check
         },
         // handle a non-successful response
@@ -91,8 +90,6 @@
   <section class="py-5">
     <div class="container">
         <div hidden class="preloader">
-          <p class="text-center bg-info">Para hacer estádisticas necesitamos descargar los datos de la api. 
-            Al tener un límite de peticiones por segundo esto puede tardar la primera vez.</p>
         </div>
         <div id="contenido">
         {% block content %}{% endblock %}
