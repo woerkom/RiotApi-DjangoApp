@@ -11,5 +11,25 @@
   </div>
 </header>
 
+<div class="preloader">
+<p class="text-center bg-info">Para hacer estádisticas necesitamos descargar los datos de la api. 
+Al tener un límite de peticiones por segundo esto puede tardar la primera vez.</p>
+</div>
 
+<style>
+.preloader {
+  position:relative;
+  width:30em;
+  height:30em;
+  background:#FFF;
+  background-image: url("/static/rotating.gif");
+  background-repeat: no-repeat; 
+  background-position: center;
+  left:40px;
+  top:20px;
+  margin: 0 auto;
+}
+</style>
 {% endblock %}
+
+

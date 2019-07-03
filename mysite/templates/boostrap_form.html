@@ -57,7 +57,8 @@
       </tr>
     </thead>
       <tr hidden id="tr_preloader">
-        <td><div id="div_preloader" class="preloader"></div></td>
+        <td colspan="100%"><div id="div_preloader" class="preloader"></div></td>
+        <!--<td colspan="100%"> <p class="text-center">hola mundo</p> </td>-->
       </tr>
     <tbody id="contenidoConsulta">
     {% for match in matches %}
@@ -243,15 +244,15 @@ $('#consulta').on('submit', function()
 <style>
 .preloader {
   position:static;
-  width:auto;
+  width:30em;
   height:30em;
   background:#FFF;
   background-image: url("/static/rotating.gif");
   background-repeat: no-repeat; 
   background-position: center;
-  background-color:green;
-  left:0px;
-  top:0px;
+  left:40px;
+  top:20px;
+  margin: 0 auto;
 }
 </style>
 {% endblock %}

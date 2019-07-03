@@ -3,6 +3,7 @@ import json
 import datetime
 import requests
 from django.conf import settings
+from json import JSONEncoder
 
 # Create your models here.
 class Player_Match(object):
@@ -65,3 +66,8 @@ class Match(object):
         self.champion = self.GetChampionName(self.champion)
         if guardar == True:
             self.players_match = self.GetMatchInfo() 
+
+#Para pasar los objetos a json
+class MyEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__    

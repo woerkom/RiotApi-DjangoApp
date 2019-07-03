@@ -1,10 +1,8 @@
 from django.shortcuts import render,redirect
 from django.core import serializers
 from django.core.paginator import Paginator
-from .models import Match, Player_Match, Player
-import requests
-import json
-import time
+from .models import Match, Player_Match, Player, MyEncoder
+import requests, json, time, os
 from django.conf import settings
 from django.http import HttpResponseRedirect
 
@@ -17,7 +15,6 @@ def MatchListView(request):
 
     try:
         if 'matches_url' not in request.session:
-            print("ha entrado la primera vez: no tiene url de matches")
             request.session['matches_url'] = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
 
         summonerName_query = request.GET.get('SummonerName')
@@ -36,7 +33,6 @@ def MatchListView(request):
         l = [Match(json.dumps(match), False) for match in matches]
         all_champions = list(l[0].champions.values())
         campeon_query = request.GET.get('champion')
-        print("campeon:", campeon_query)
         if campeon_query != '' and campeon_query is not None:
             l = list(filter(lambda x: x.champion == campeon_query, l))
             totalGames = len(l)
@@ -96,19 +92,35 @@ def ModalContent(request, gameId):
     return render(request, "content.html", {"playersMatch1": playersMatch[:5], "playersMatch2": playersMatch[5:]})
 
 def Estadisticas(request):
-    url = 'https://euw1.api.riotgames.com/lol/match/v4/matchlists/by-account/-uJykwfPEE98SClRH8f8mQs25DDWU85SnMMzDRPgGuzsk_k'
-    r = requests.get(url, headers=settings.HEADERS)
+
+    r = requests.get(request.session['matches_url'], headers=settings.HEADERS)
     datos = r.json()
     datos = datos['matches']
     
+    #Comprobamos si para ese AccountId existe ya un xml, si existe lo actualiza, sino lo genera
+    xml_name = request.session['matches_url'].rsplit("/")[-1]
+    path = os.path.join(settings.BASE_DIR, "jsons\\")
+    if os.path.isfile(path + xml_name + '.json'):
+        print("[DEBUG]: archivo encontado")
+    else:
+        f = open(path + xml_name + ".json", "xt")        
+
     #rellenamos el objeto, si la propiedad players_math devuelve 1 esperamos para volver a realizar la peticion a la API
     matches = []
-    #for match in datos:
-    #    partida = Match(json.dumps(match), True)
-    #    while partida.players_match == -1:
-    #        time.sleep(1)
-    #        partida = Match(json.dumps(match), True)
+    for match in datos:
+        partida = Match(json.dumps(match), True)
+        while partida.players_match == -1:
+            time.sleep(1)
+            partida = Match(json.dumps(match), True)
 
-    #matches.append(partida)
+        matches.append(partida)
 
-    return render(request, "estadisticas.html", {"matches": matches})
+    for game in matches:
+        #MyEncoder saca un string con toda la info del objeto que pasaremos a json mediante json.loads
+        gameJson = json.loads(MyEncoder().encode(game))
+        del gameJson['champions'] #Eliminamos la variable compartida champions
+        json.dump(gameJson, f)
+        f.write("\n")
+
+
+    return render(request, "estadisticas.html")
